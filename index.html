@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced ISS Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0ea5e9">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-satellite"></i>
+                <span>ISS Tracker</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#live-tracking" class="nav-link active">Live Tracking</a></li>
+                <li><a href="#astronauts" class="nav-link">Astronauts</a></li>
+                <li><a href="#statistics" class="nav-link">Statistics</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">International Space Station</h1>
+            <p class="hero-subtitle">Real-time tracking of humanity's outpost in space</p>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-value" id="iss-altitude">408</span>
+                    <span class="stat-unit">km altitude</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value" id="iss-speed">27,600</span>
+                    <span class="stat-unit">km/h speed</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value" id="astronaut-count">0</span>
+                    <span class="stat-unit">astronauts</span>
+                </div>
+            </div>
+        </div>
+        <div class="hero-animation">
+            <div class="earth">
+                <div class="iss-orbit">
+                    <div class="iss-icon">
+                        <i class="fas fa-satellite"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Live Tracking Section -->
+        <section id="live-tracking" class="section">
+            <div class="container">
+                <h2 class="section-title">Live ISS Position</h2>
+                <div class="tracking-grid">
+                    <div class="map-container">
+                        <div id="map" class="map"></div>
+                        <div class="map-controls-panel">
+                            <div class="controls-header">
+                                <h4><i class="fas fa-cog"></i> Map Controls</h4>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">Navigation</label>
+                                <button id="center-iss" class="control-btn primary">
+                                    <div class="btn-icon">
+                                        <i class="fas fa-crosshairs"></i>
+                                    </div>
+                                    <div class="btn-content">
+                                        <span class="btn-title">Center on ISS</span>
+                                        <span class="btn-desc">Focus map on current position</span>
+                                    </div>
+                                </button>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label">Visualization</label>
+                                <button id="toggle-orbit" class="control-btn secondary">
+                                    <div class="btn-icon">
+                                        <i class="fas fa-route"></i>
+                                    </div>
+                                    <div class="btn-content">
+                                        <span class="btn-title">Show Orbit</span>
+                                        <span class="btn-desc">Display orbital path</span>
+                                    </div>
+                                </button>
+                                <button id="toggle-night" class="control-btn secondary">
+                                    <div class="btn-icon">
+                                        <i class="fas fa-moon"></i>
+                                    </div>
+                                    <div class="btn-content">
+                                        <span class="btn-title">Day/Night</span>
+                                        <span class="btn-desc">Toggle night overlay</span>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info-panel">
+                        <div class="info-card">
+                            <h3>Current Position</h3>
+                            <div class="position-data">
+                                <div class="coordinate">
+                                    <label>Latitude</label>
+                                    <span id="current-lat">--</span>
+                                </div>
+                                <div class="coordinate">
+                                    <label>Longitude</label>
+                                    <span id="current-lng">--</span>
+                                </div>
+                                <div class="coordinate">
+                                    <label>Altitude</label>
+                                    <span id="current-alt">408 km</span>
+                                </div>
+                                <div class="coordinate">
+                                    <label>Speed</label>
+                                    <span id="current-speed">27,600 km/h</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info-card">
+                            <h3>Ground Location</h3>
+                            <div class="ground-info">
+                                <div class="location-data">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span id="ground-location">Loading...</span>
+                                </div>
+                                <div class="timezone-data">
+                                    <i class="fas fa-clock"></i>
+                                    <span id="local-time">--:--</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info-card">
+                            <h3>Next Pass</h3>
+                            <div class="pass-info">
+                                <div class="pass-time">
+                                    <i class="fas fa-rocket"></i>
+                                    <span id="next-pass">Calculating...</span>
+                                </div>
+                                <div class="pass-duration">
+                                    <i class="fas fa-stopwatch"></i>
+                                    <span id="pass-duration">-- minutes</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Astronauts Section -->
+        <section id="astronauts" class="section">
+            <div class="container">
+                <h2 class="section-title">Astronauts in Space</h2>
+                <div class="astronauts-grid" id="astronauts-grid">
+                    <!-- Astronaut cards will be populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Statistics Section -->
+        <section id="statistics" class="section">
+            <div class="container">
+                <h2 class="section-title">Mission Statistics</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Orbits Completed Today</h3>
+                            <span class="stat-number" id="orbits-today">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Mission Duration</h3>
+                            <span class="stat-number" id="mission-duration">--</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-route"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Distance Traveled</h3>
+                            <span class="stat-number" id="distance-traveled">-- km</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Total People in Space</h3>
+                            <span class="stat-number" id="total-people">--</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <h3>ISS Altitude Over Time</h3>
+                    <canvas id="altitude-chart"></canvas>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 ISS Tracker. Data provided by Open Notify API.</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+{
+  "name": "iss-tracker",
+  "version": "1.0.0",
+  "description": "Advanced web application for real-time ISS tracking and space station monitoring",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "iss",
+    "space",
+    "tracking",
+    "real-time",
+    "astronauts",
+    "satellite",
+    "web-app"
+  ],
+  "author": "ISS Tracker Team",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/asishadimulapu/Iss-Tracker.git"
+  }
+}
